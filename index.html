@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terania Take 5 Safety PWA</title>
+  
+  <!-- SEO & PWA Meta Tags -->
+  <meta name="description" content="An offline-first Take 5 Safety Checklist tool for Terania workers. Perform hazards assessments and export PDF reports instantly.">
+  <meta name="theme-color" content="#005445">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="assets/_Terania_Icon_Green.png">
+  <link rel="apple-touch-icon" href="assets/_Terania_Icon_Green.png">
+  
+  <!-- Styling -->
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- HEADER (Visible when logged in) -->
+    <header id="app-header" style="display: none;">
+      <div class="header-logo" id="logo-container">
+        <img src="assets/_Terania_Horizonal_Reversed.png" alt="Terania Logo" id="img-header-logo">
+      </div>
+      <div class="header-actions">
+        <div class="user-badge" id="user-badge-info">
+          <div class="avatar" id="user-avatar">?</div>
+          <div class="user-name-role">
+            <span class="user-name" id="lbl-user-name">Guest User</span>
+            <span class="user-role" id="lbl-user-role">Field Worker</span>
+          </div>
+        </div>
+        <button class="icon-btn" id="btn-open-settings" title="App Settings">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+        </button>
+        <button class="icon-btn" id="btn-logout" title="Sign Out">
+          <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- 1. LOGIN VIEW (Simplified for Local Profile Sign-in) -->
+    <main id="view-login" class="login-view view active">
+      <img src="assets/_Terania_Stacked_Reversed.png" alt="Terania Logo" class="login-logo" id="img-login-logo">
+      <div class="login-card" id="card-login-box">
+        <h2>Take 5 Operator Sign In</h2>
+        <p class="mb-2" style="color: rgba(255, 255, 255, 0.75);">Enter operator credentials to generate personalized Take 5 compliance checklists.</p>
+        
+        <form id="form-operator-login" onsubmit="event.preventDefault();" style="text-align: left;">
+          <div class="form-group">
+            <label for="input-login-name" style="color: var(--color-secondary); font-size: 0.8rem;">Full Name *</label>
+            <input type="text" id="input-login-name" class="form-input" placeholder="e.g., Michael Clement" required style="background: rgba(255,255,255,0.08); color: white; border-color: rgba(255,255,255,0.15);">
+          </div>
+          
+          <div class="form-group">
+            <label for="input-login-email" style="color: var(--color-secondary); font-size: 0.8rem;">Email Address *</label>
+            <input type="email" id="input-login-email" class="form-input" placeholder="e.g., michael.clement@terania.com.au" required style="background: rgba(255,255,255,0.08); color: white; border-color: rgba(255,255,255,0.15);">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label for="select-login-role" style="color: var(--color-secondary); font-size: 0.8rem;">Job Role *</label>
+            <select id="select-login-role" class="form-input" required style="background: rgba(255,255,255,0.08); color: white; border-color: rgba(255,255,255,0.15); cursor: pointer;">
+              <option value="Surveying" style="color: black;">Surveying</option>
+              <option value="Engineering" style="color: black;">Engineering</option>
+              <option value="Site Inspection" style="color: black;">Site Inspection</option>
+              <option value="General" style="color: black;">General</option>
+            </select>
+          </div>
+          
+          <button type="submit" class="btn btn-secondary btn-block" id="btn-login-submit" style="background-color: var(--color-secondary); color: var(--color-primary); font-weight: 700; border-radius: var(--border-radius-sm);">
+            Sign In &amp; Enter Dashboard
+          </button>
+        </form>
+      </div>
+    </main>
+
+    <!-- 2. DASHBOARD VIEW -->
+    <main id="view-dashboard" class="view">
+      <div class="dashboard-hero" id="card-dashboard-hero">
+        <div>
+          <h2>Workplace Safety First</h2>
+          <p class="mt-1">Please complete a Take 5 assessment before commencing any task.</p>
+        </div>
+      </div>
+
+      <!-- GPS Tracking Panel -->
+      <div class="location-panel" id="panel-gps-tracking">
+        <div class="location-info">
+          <span class="location-dot" id="gps-status-dot"></span>
+          <span id="lbl-gps-coordinates">Fetching GPS location...</span>
+        </div>
+        <button class="icon-btn text-primary" id="btn-refetch-gps" title="Refresh GPS" style="background: rgba(0,84,69,0.06); color: var(--color-primary);">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Job Metadata Form -->
+      <div class="card" id="card-job-details">
+        <h3 class="mb-2 text-primary">Job Setup</h3>
+        <div class="form-group">
+          <label for="input-job-number">Job Number *</label>
+          <input type="text" id="input-job-number" class="form-input" placeholder="e.g., T-2026-1049" required>
+        </div>
+        <div class="form-group">
+          <label for="input-job-desc">Job Description / Title</label>
+          <input type="text" id="input-job-desc" class="form-input" placeholder="e.g., Substation cable testing">
+        </div>
+        <button class="btn btn-primary btn-block" id="btn-start-checklist">
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 11 12 14 22 4"></polyline>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+          </svg>
+          Start Take 5 Safety Check
+        </button>
+      </div>
+
+      <!-- History List -->
+      <div class="card" id="card-checklists-history">
+        <div class="history-header">
+          <h3 class="text-primary">Recent Take 5 Reports</h3>
+        </div>
+        <div id="dashboard-history-list" class="history-list">
+          <!-- Populated by JavaScript -->
+          <div class="empty-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+            <p>No checklists completed yet.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- 3. CHECKLIST WIZARD VIEW -->
+    <main id="view-checklist" class="view">
+      <div class="wizard-progress">
+        <div class="wizard-progress-bar" id="checklist-progress-bar"></div>
+      </div>
+      
+      <div class="wizard-step-title" id="lbl-wizard-step-header">Step 1 of 5</div>
+      <h2 id="lbl-wizard-step-title">Stop &amp; Think</h2>
+      <p class="subtitle" id="lbl-wizard-step-desc">Evaluate the task requirements and your physical fitness.</p>
+
+      <!-- Active Questions Container -->
+      <div class="checklist-question-container" id="container-step-questions">
+        <!-- Questions injected here by app.js -->
+      </div>
+
+      <div class="wizard-footer">
+        <button class="btn btn-secondary" id="btn-wizard-back">Back</button>
+        <button class="btn btn-primary" id="btn-wizard-next">Next</button>
+      </div>
+    </main>
+
+    <!-- 4. CONFIG/SETTINGS VIEW -->
+    <main id="view-settings" class="view">
+      <h1>Settings &amp; Configuration</h1>
+      
+      <div class="settings-tab-bar">
+        <div class="settings-tab active" id="tab-btn-checklist" onclick="app.switchSettingsTab('checklist')">Checklist Qs</div>
+        <div class="settings-tab" id="tab-btn-email" onclick="app.switchSettingsTab('email')">Office Email</div>
+      </div>
+
+      <!-- Checklist Customizer Settings -->
+      <div class="settings-pane active" id="pane-settings-checklist">
+        <p class="subtitle mb-2">Configure active questions and add/remove safety queries.</p>
+        
+        <div class="config-question-list" id="list-settings-questions">
+          <!-- Injected by JavaScript -->
+        </div>
+
+        <div class="card" style="padding: 1rem;">
+          <h3 class="text-primary mb-1">Add Custom Question</h3>
+          <div class="form-group" style="margin-bottom: 0.75rem;">
+            <label for="select-new-q-step">Category/Step</label>
+            <select id="select-new-q-step" class="form-input" style="padding: 0.6rem 0.8rem;">
+              <option value="1">1. Stop &amp; Think</option>
+              <option value="2">2. Identify Hazards</option>
+              <option value="3">3. Assess Risks</option>
+              <option value="4">4. Control Risks</option>
+              <option value="5">5. Proceed Safely</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom: 0.75rem;">
+            <label for="input-new-q-text">Question Text</label>
+            <input type="text" id="input-new-q-text" class="form-input" style="padding: 0.6rem 0.8rem;" placeholder="e.g. Is a fire extinguisher nearby?">
+          </div>
+          <button class="btn btn-outline btn-sm btn-block" id="btn-add-custom-question">Add Question</button>
+        </div>
+      </div>
+
+      <!-- Recipient Office Email Settings -->
+      <div class="settings-pane" id="pane-settings-email">
+        <p class="subtitle mb-2">Configure the default office email address that will receive completed Take 5 Safety reports.</p>
+        
+        <div class="form-group">
+          <label for="input-office-email">Recipient Office Email Address</label>
+          <input type="email" id="input-office-email" class="form-input" placeholder="e.g., safety@terania.com.au">
+        </div>
+        
+        <button class="btn btn-primary btn-sm" id="btn-save-email-settings">Save Email Configuration</button>
+      </div>
+
+      <div class="wizard-footer" style="border-top: 1px solid var(--color-border); padding-top: 1rem;">
+        <button class="btn btn-secondary btn-block" id="btn-settings-close">Return to Dashboard</button>
+      </div>
+    </main>
+
+    <!-- Global Toast Toast Notification -->
+    <div id="global-toast" class="toast">
+      <span id="toast-message">Notification message</span>
+    </div>
+
+  </div>
+
+  <!-- Third Party Dependencies (Local copies loaded for PWA support) -->
+  <script src="assets/jspdf.umd.min.js"></script>
+
+  <!-- Application Logic -->
+  <script src="auth.js"></script>
+  <script src="app.js"></script>
+
+</body>
+</html>

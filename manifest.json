@@ -1,0 +1,24 @@
+{
+  "name": "Terania Take 5 Safety",
+  "short_name": "Terania Take 5",
+  "description": "Progressive Web Application (PWA) Take 5 Safety Checklist for Terania",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#005445",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "./assets/_Terania_Icon_Green.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./assets/_Terania_Icon_Reversed.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
